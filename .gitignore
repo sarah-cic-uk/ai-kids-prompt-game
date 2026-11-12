@@ -1,0 +1,4 @@
+# Local tooling: keep it out of the published GitHub Pages site.
+.claude/
+.DS_Store
+node_modules/

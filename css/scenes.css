@@ -1,0 +1,1175 @@
+/* ==========================================================================
+   Scene animations. Each scene's container has data-state:
+   idle | excellent | partial | poor | restored
+   ========================================================================== */
+
+.scene {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #0a0f2e;
+}
+.scene-svg {
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+.px-text {
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: 0.02em;
+}
+.scene rect,
+.scene g {
+  transform-box: fill-box;
+}
+
+/* shared ambience */
+.scene .star {
+  animation: px-twinkle 3s steps(2) infinite;
+}
+.scene .star.s1 {
+  animation-delay: 1s;
+}
+.scene .star.s2 {
+  animation-delay: 2s;
+}
+.scene .aurora {
+  animation: px-aurora 9s ease-in-out infinite alternate;
+  transform-box: view-box;
+}
+.scene .aurora.a2 {
+  animation-duration: 12s;
+  animation-direction: alternate-reverse;
+}
+.scene .aurora.a3 {
+  animation-duration: 15s;
+}
+@keyframes px-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes px-aurora {
+  from {
+    transform: translateX(-6px);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateX(6px);
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------- village */
+.scene-village .win {
+  fill: #2c2a4a;
+  transition: fill 0.3s;
+}
+.scene-village .lamp {
+  fill: #3a3f6a;
+}
+.scene-village .lamp-glow {
+  fill: #ffd166;
+  opacity: 0;
+}
+.scene-village .bulb {
+  fill: #25304a;
+}
+.scene-village .tree-star rect {
+  fill: #6a6a7a;
+}
+.scene-village .far-crystal {
+  fill: #47f5e8;
+  opacity: 0.35;
+  animation: dim-pulse 2s ease-in-out infinite;
+}
+.scene-village .sparks rect {
+  opacity: 0;
+}
+.scene-village .overload {
+  opacity: 0;
+  pointer-events: none;
+}
+.scene-village[data-state='idle'] .sparks rect {
+  animation: spark 1.6s steps(2) infinite;
+  animation-delay: var(--d);
+}
+@keyframes spark {
+  0%,
+  70%,
+  100% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 1;
+  }
+}
+@keyframes dim-pulse {
+  50% {
+    opacity: 0.12;
+  }
+}
+
+/* lights on (helper keyframes) */
+@keyframes light-win {
+  to {
+    fill: #ffd98a;
+  }
+}
+@keyframes light-lamp {
+  to {
+    fill: #fff1b8;
+  }
+}
+@keyframes light-glow {
+  to {
+    opacity: 0.35;
+  }
+}
+@keyframes bulb-on-0 {
+  to {
+    fill: #ff5a6e;
+  }
+}
+@keyframes bulb-on-1 {
+  to {
+    fill: #ffd166;
+  }
+}
+@keyframes bulb-on-2 {
+  to {
+    fill: #47f5e8;
+  }
+}
+@keyframes bulb-on-3 {
+  to {
+    fill: #b388ff;
+  }
+}
+@keyframes star-on {
+  to {
+    fill: #ffd166;
+  }
+}
+@keyframes bulb-twinkle {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* excellent: tree → pine → holly in order */
+.scene-village[data-state='excellent'] [data-g='tree'].bulb.b0 {
+  animation: bulb-on-0 0.2s forwards, bulb-twinkle 1.2s steps(2) infinite;
+}
+.scene-village[data-state='excellent'] [data-g='tree'].bulb.b1 {
+  animation: bulb-on-1 0.2s forwards, bulb-twinkle 1.5s steps(2) infinite;
+}
+.scene-village[data-state='excellent'] [data-g='tree'].bulb.b2 {
+  animation: bulb-on-2 0.2s forwards, bulb-twinkle 1.1s steps(2) infinite;
+}
+.scene-village[data-state='excellent'] [data-g='tree'].bulb.b3 {
+  animation: bulb-on-3 0.2s forwards, bulb-twinkle 1.7s steps(2) infinite;
+}
+.scene-village[data-state='excellent'] [data-g='tree'].bulb {
+  animation-delay: calc(var(--d) * 0.6), 1s;
+}
+.scene-village[data-state='excellent'] .tree-star rect {
+  animation: star-on 0.3s 0.6s forwards;
+}
+.scene-village[data-state='excellent'] .tree-star {
+  animation: star-glow 1.4s 0.9s ease-in-out infinite;
+}
+.scene-village[data-state='excellent'] [data-g='tree'].lamp {
+  animation: light-lamp 0.2s forwards;
+  animation-delay: 0.3s;
+}
+.scene-village[data-state='excellent'] [data-g='tree'].lamp-glow {
+  animation: light-glow 0.3s forwards;
+  animation-delay: 0.3s;
+}
+.scene-village[data-state='excellent'] [data-g='pine'].win {
+  animation: light-win 0.2s forwards;
+  animation-delay: calc(1.2s + var(--d));
+}
+.scene-village[data-state='excellent'] [data-g='pine'].lamp,
+.scene-village[data-state='excellent'] [data-g='pine'].lamp-glow {
+  animation: light-lamp 0.2s forwards;
+  animation-delay: 1.3s;
+}
+.scene-village[data-state='excellent'] [data-g='pine'].lamp-glow {
+  animation-name: light-glow;
+}
+.scene-village[data-state='excellent'] [data-g='holly'].win {
+  animation: light-win 0.2s forwards;
+  animation-delay: calc(2.2s + var(--d));
+}
+.scene-village[data-state='excellent'] [data-g='holly'].lamp {
+  animation: light-lamp 0.2s forwards;
+  animation-delay: 2.3s;
+}
+.scene-village[data-state='excellent'] [data-g='holly'].lamp-glow {
+  animation: light-glow 0.3s forwards;
+  animation-delay: 2.3s;
+}
+.scene-village[data-state='excellent'] .far-crystal {
+  animation: crystal-on 0.6s 3s forwards;
+}
+@keyframes star-glow {
+  50% {
+    filter: drop-shadow(0 0 2px #ffd166);
+  }
+}
+@keyframes crystal-on {
+  to {
+    opacity: 1;
+    filter: drop-shadow(0 0 2px #47f5e8);
+  }
+}
+
+/* partial: some Holly Row lamps, flickering */
+.scene-village[data-state='partial'] [data-g='holly'].win {
+  animation: light-win 0.2s forwards, flicker 2.4s 1s steps(1) infinite;
+  animation-delay: calc(0.4s + var(--d)), 1.2s;
+}
+.scene-village[data-state='partial'] [data-g='holly'].lamp {
+  animation: light-lamp 0.2s 0.4s forwards, flicker 1.8s 1s steps(1) infinite;
+}
+.scene-village[data-state='partial'] [data-g='tree'].bulb {
+  animation: flicker-dim 2s 0.6s steps(1) infinite;
+}
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0.2;
+  }
+  14% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.4;
+  }
+  62% {
+    opacity: 1;
+  }
+}
+@keyframes flicker-dim {
+  0%,
+  100% {
+    fill: #25304a;
+  }
+  48% {
+    fill: #ffd166;
+  }
+  52% {
+    fill: #25304a;
+  }
+}
+
+/* poor: overload flash, everything goes dark */
+.scene-village[data-state='poor'] .win,
+.scene-village[data-state='poor'] .lamp {
+  animation: surge 0.9s forwards;
+}
+.scene-village[data-state='poor'] .overload {
+  animation: overload 1s 0.5s forwards;
+}
+.scene-village[data-state='poor'] .sparks rect {
+  animation: spark 0.4s steps(2) 4;
+  animation-delay: calc(0.6s + var(--d));
+}
+.scene-village[data-state='poor'] .gridbox {
+  animation: px-shake 0.4s 0.6s 2;
+}
+@keyframes surge {
+  0% {
+    fill: #2c2a4a;
+  }
+  40% {
+    fill: #fff6c8;
+  }
+  60% {
+    fill: #fff6c8;
+  }
+  100% {
+    fill: #2c2a4a;
+  }
+}
+@keyframes overload {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.65;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes px-shake {
+  25% {
+    transform: translateX(-1px);
+  }
+  75% {
+    transform: translateX(1px);
+  }
+}
+
+/* title screen village keeps twinkling */
+.title-village[data-state='excellent'] [data-g='pine'].win,
+.title-village[data-state='excellent'] [data-g='holly'].win {
+  animation-delay: calc(0.2s + var(--d));
+}
+
+/* ---------------------------------------------------------------- depot */
+.scene-depot .win {
+  fill: #ffd166;
+  animation: dim-pulse 3s ease-in-out infinite;
+}
+.scene-depot .lighthouse {
+  animation: lighthouse 2s steps(2) infinite;
+}
+.scene-depot .ripple {
+  animation: ripple 3s ease-in-out infinite alternate;
+}
+.scene-depot .coast-route {
+  opacity: 0;
+}
+.scene-depot .mark {
+  opacity: 0;
+}
+.scene-depot .moon-poor {
+  opacity: 0;
+}
+.scene-depot .trail {
+  opacity: 0;
+}
+@keyframes lighthouse {
+  50% {
+    fill: #fff6c8;
+  }
+}
+@keyframes ripple {
+  to {
+    transform: translateX(3px);
+  }
+}
+@keyframes mark-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* sleigh flights */
+.scene-depot .sleigh {
+  transform-box: view-box;
+}
+.scene-depot[data-state] .sleigh-body {
+  animation: hover 0.6s ease-in-out infinite alternate;
+}
+@keyframes hover {
+  to {
+    transform: translateY(-0.6px);
+  }
+}
+
+.scene-depot[data-state='excellent'] .coast-route {
+  animation: route-draw 1.4s 1.5s forwards;
+  stroke-dashoffset: 40;
+}
+@keyframes route-draw {
+  to {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+.scene-depot[data-state='excellent'] .trail,
+.scene-depot[data-state='partial'] .trail,
+.scene-depot[data-state='poor'] .trail {
+  opacity: 1;
+}
+.scene-depot[data-state='excellent'] .s1 {
+  animation: fly-s1 1.5s 0.2s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+.scene-depot[data-state='excellent'] .s2 {
+  animation: fly-s2-coast 2.4s 0.6s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+.scene-depot[data-state='excellent'] .s3 {
+  animation: fly-s3 2.6s 1s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+.scene-depot[data-state='excellent'] .ok {
+  animation: mark-in 0.4s forwards;
+  animation-delay: var(--d);
+}
+@keyframes fly-s1 {
+  0% {
+    transform: translate(0, 0);
+  }
+  60% {
+    transform: translate(30px, -40px);
+  }
+  100% {
+    transform: translate(52px, -48px);
+  }
+}
+@keyframes fly-s2-coast {
+  0% {
+    transform: translate(0, 0);
+  }
+  40% {
+    transform: translate(-14px, -18px);
+  }
+  100% {
+    transform: translate(-56px, -40px);
+  }
+}
+@keyframes fly-s3 {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-70px, -40px);
+  }
+  100% {
+    transform: translate(-138px, -42px);
+  }
+}
+
+/* partial: road sleigh skids, medicine late */
+.scene-depot[data-state='partial'] .s1 {
+  animation: fly-s1-frost 2.2s 0.2s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+.scene-depot[data-state='partial'] .s2 {
+  animation: skid 2.4s 0.5s ease-in forwards;
+}
+.scene-depot[data-state='partial'] .s3 {
+  animation: fly-s1 3.4s 1.4s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+.scene-depot[data-state='partial'] .bad-ib {
+  animation: mark-in 0.4s 2.4s forwards;
+}
+.scene-depot[data-state='partial'] .ok-partial {
+  animation: mark-in 0.4s 2.4s forwards;
+}
+@keyframes fly-s1-frost {
+  to {
+    transform: translate(-108px, -46px);
+  }
+}
+@keyframes skid {
+  0% {
+    transform: translate(0, 0) rotate(0);
+  }
+  40% {
+    transform: translate(-30px, 2px) rotate(-6deg);
+  }
+  60% {
+    transform: translate(-42px, 0) rotate(8deg);
+  }
+  80% {
+    transform: translate(-50px, 3px) rotate(-12deg);
+  }
+  100% {
+    transform: translate(-54px, 2px) rotate(-90deg);
+  }
+}
+
+/* poor: sleighs fly off in random directions */
+.scene-depot[data-state='poor'] .s1 {
+  animation: fly-away-1 1.6s 0.2s ease-in forwards;
+}
+.scene-depot[data-state='poor'] .s2 {
+  animation: fly-away-2 1.8s 0.4s ease-in forwards;
+}
+.scene-depot[data-state='poor'] .s3 {
+  animation: fly-away-3 1.6s 0.6s ease-in forwards;
+}
+.scene-depot[data-state='poor'] .q {
+  animation: mark-in 0.4s forwards, q-bob 1s 0.4s ease-in-out infinite alternate;
+  animation-delay: var(--d), calc(var(--d) + 0.4s);
+}
+.scene-depot[data-state='poor'] .moon-poor {
+  animation: mark-in 0.6s 1.2s forwards;
+}
+@keyframes fly-away-1 {
+  to {
+    transform: translate(90px, -100px) rotate(20deg);
+  }
+}
+@keyframes fly-away-2 {
+  to {
+    transform: translate(-110px, -120px) rotate(-30deg);
+  }
+}
+@keyframes fly-away-3 {
+  to {
+    transform: translate(60px, -140px) rotate(60deg);
+  }
+}
+@keyframes q-bob {
+  to {
+    transform: translateY(-2px);
+  }
+}
+
+/* -------------------------------------------------------------- weather */
+.scene-weather .sky-clear {
+  opacity: 0;
+  transition: opacity 1.2s ease 0.6s;
+}
+.scene-weather[data-state='excellent'] .sky-clear,
+.scene-weather[data-state='partial'] .sky-clear {
+  opacity: 1;
+}
+.scene-weather[data-state='partial'] .sky-clear {
+  opacity: 0.45;
+}
+.scene-weather .beacon {
+  fill: #e2475b;
+  animation: beacon 0.6s steps(2) infinite;
+}
+.scene-weather[data-state='excellent'] .beacon {
+  fill: #5fd38d;
+  animation: beacon 1.6s steps(2) infinite;
+}
+@keyframes beacon {
+  50% {
+    opacity: 0.3;
+  }
+}
+.scene-weather .wf {
+  animation: wf-fall calc(1.1s / var(--s)) linear infinite;
+  animation-delay: calc(var(--d) * -1s);
+}
+.scene-weather[data-state='idle'] .wf,
+.scene-weather[data-state='poor'] .wf {
+  animation-name: wf-blizzard;
+  animation-duration: calc(0.7s / var(--s));
+}
+.scene-weather[data-state='excellent'] .wf {
+  animation-name: wf-gentle;
+  animation-duration: calc(5.5s / var(--s));
+}
+.scene-weather[data-state='excellent'] .wf.f1,
+.scene-weather[data-state='excellent'] .wf.f3 {
+  display: none;
+}
+.scene-weather[data-state='partial'] .wf {
+  animation-name: wf-fall;
+  animation-duration: calc(2s / var(--s));
+}
+@keyframes wf-blizzard {
+  from {
+    transform: translate(40px, -6px);
+  }
+  to {
+    transform: translate(-60px, 116px);
+  }
+}
+@keyframes wf-fall {
+  from {
+    transform: translate(10px, -6px);
+  }
+  to {
+    transform: translate(-30px, 116px);
+  }
+}
+@keyframes wf-gentle {
+  0% {
+    transform: translate(0, -6px);
+  }
+  50% {
+    transform: translate(4px, 55px);
+  }
+  100% {
+    transform: translate(-2px, 116px);
+  }
+}
+.scene-weather .wl {
+  opacity: 0;
+}
+.scene-weather[data-state='idle'] .wl,
+.scene-weather[data-state='poor'] .wl,
+.scene-weather[data-state='partial'] .wl {
+  animation: wind 0.9s linear infinite;
+  animation-delay: calc(var(--d) * -1s);
+}
+.scene-weather[data-state='partial'] .wl {
+  animation-duration: 1.4s;
+}
+@keyframes wind {
+  0% {
+    transform: translateX(200px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(-220px);
+    opacity: 0;
+  }
+}
+.scene-weather .pile {
+  transform: translateY(80px);
+  transform-box: view-box;
+}
+.scene-weather .bury-sign {
+  opacity: 0;
+}
+.scene-weather[data-state='poor'] .pile {
+  animation: pile-rise 3s 0.4s ease-out forwards;
+}
+.scene-weather[data-state='poor'] .bury-sign {
+  animation: mark-in 0.4s 3.2s forwards;
+}
+.scene-weather[data-state='partial'] .pile {
+  animation: pile-half 3s 0.4s ease-out forwards;
+}
+@keyframes pile-rise {
+  to {
+    transform: translateY(6px);
+  }
+}
+@keyframes pile-half {
+  to {
+    transform: translateY(46px);
+  }
+}
+.scene-weather .ski-open {
+  display: none;
+}
+.scene-weather[data-state='excellent'] .ski-open {
+  display: inline;
+  animation: mark-in 0.4s 1.4s backwards;
+}
+.scene-weather[data-state='excellent'] .ski-closed {
+  display: none;
+}
+.scene-weather[data-state='excellent'] .sledge {
+  animation: sledge 2.6s 1.2s ease-in infinite;
+  transform-box: view-box;
+}
+@keyframes sledge {
+  0% {
+    transform: translate(0, 0);
+  }
+  70% {
+    transform: translate(18px, 14px);
+    opacity: 1;
+  }
+  71%,
+  100% {
+    transform: translate(18px, 14px);
+    opacity: 0;
+  }
+}
+.scene-weather[data-state='excellent'] .lake rect:nth-child(5) {
+  animation: skate 2.4s ease-in-out infinite alternate;
+}
+@keyframes skate {
+  to {
+    transform: translateX(26px);
+  }
+}
+
+/* --------------------------------------------------------------- puzzle */
+.scene-puzzle .slot-fill {
+  opacity: 0;
+  transform-box: view-box;
+}
+.scene-puzzle .scroll {
+  opacity: 0;
+  transform-box: view-box;
+}
+.scene-puzzle .err {
+  opacity: 0;
+}
+.scene-puzzle .board-glow {
+  opacity: 0;
+}
+.scene-puzzle .piece {
+  animation: piece-bob 1.6s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.13s);
+}
+@keyframes piece-bob {
+  to {
+    transform: translateY(-1px);
+  }
+}
+.scene-puzzle[data-state='excellent'] .slot-fill {
+  animation: slot-in 0.35s forwards;
+  animation-delay: calc(0.3s + var(--i) * 0.11s);
+}
+.scene-puzzle[data-state='excellent'] .piece {
+  animation: piece-fly 0.5s forwards;
+  animation-delay: calc(var(--i) * 0.15s);
+}
+.scene-puzzle[data-state='excellent'] .board-glow {
+  animation: board-glow 1.2s 2.4s ease-in-out infinite alternate;
+}
+@keyframes slot-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(1.2);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes piece-fly {
+  to {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.3);
+  }
+}
+@keyframes board-glow {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.scene-puzzle[data-state='partial'] .scroll-list {
+  animation: scroll-in 0.6s 0.3s forwards;
+}
+.scene-puzzle[data-state='partial'] .slot-fill:nth-child(-n + 6) {
+  animation: slot-in 0.35s forwards;
+  animation-delay: calc(0.2s + var(--i) * 0.11s);
+}
+.scene-puzzle[data-state='poor'] .scroll-long {
+  animation: scroll-long 1.6s 0.3s ease-out forwards;
+}
+.scene-puzzle[data-state='poor'] .err,
+.scene-puzzle[data-state='partial'] .err {
+  animation: err 0.5s 1.4s steps(2) 4 forwards;
+}
+@keyframes scroll-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) rotate(-3deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(14px) rotate(2deg);
+  }
+}
+@keyframes scroll-long {
+  from {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes err {
+  0% {
+    opacity: 0;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* -------------------------------------------------------------- celebot */
+.scene-celebot .bulb {
+  fill: #3a2e4a;
+}
+.scene-celebot .cb-face {
+  display: none;
+}
+.scene-celebot[data-state='idle'] .cb-broken,
+.scene-celebot[data-state='poor'] .cb-broken {
+  display: inline;
+}
+.scene-celebot[data-state='partial'] .cb-meh {
+  display: inline;
+}
+.scene-celebot[data-state='excellent'] .cb-happy {
+  display: inline;
+}
+.scene-celebot .cb-light {
+  fill: #e2475b;
+  animation: beacon 0.5s steps(2) infinite;
+  animation-delay: var(--d);
+}
+.scene-celebot .celebot {
+  transform-box: view-box;
+  transform-origin: 82px 92px;
+}
+.scene-celebot[data-state='idle'] .celebot {
+  animation: glitch 2.2s steps(1) infinite;
+}
+.scene-celebot[data-state='idle'] .cb-sparks rect,
+.scene-celebot[data-state='poor'] .cb-sparks rect {
+  animation: spark 1.2s steps(2) infinite;
+  animation-delay: var(--d);
+}
+.scene-celebot .cb-sparks rect {
+  opacity: 0;
+}
+.scene-celebot .smoke rect {
+  opacity: 0;
+}
+.scene-celebot[data-state='poor'] .smoke rect {
+  animation: smoke 1.8s ease-out infinite;
+  animation-delay: var(--d);
+}
+.scene-celebot[data-state='poor'] .celebot {
+  animation: px-shake 0.25s steps(2) infinite;
+}
+.scene-celebot .peng {
+  opacity: 0;
+}
+.scene-celebot[data-state='poor'] .peng {
+  animation: mark-in 0.4s forwards;
+  animation-delay: calc(0.6s + var(--i) * 0.25s);
+}
+.scene-celebot[data-state='poor'] .peng-body {
+  animation: waddle 0.5s steps(2) infinite;
+}
+@keyframes glitch {
+  0%,
+  100% {
+    transform: none;
+  }
+  10% {
+    transform: translateX(1px) skewX(4deg);
+  }
+  12% {
+    transform: none;
+  }
+  55% {
+    transform: translateX(-1px);
+  }
+  57% {
+    transform: none;
+  }
+}
+@keyframes smoke {
+  0% {
+    opacity: 0.7;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-18px) scale(2);
+  }
+}
+@keyframes waddle {
+  50% {
+    transform: rotate(8deg);
+  }
+}
+.scene-celebot[data-state='partial'] .cb-light {
+  fill: #ffd166;
+  animation-duration: 1s;
+}
+.scene-celebot[data-state='excellent'] .cb-light {
+  fill: #5fd38d;
+  animation: none;
+}
+.scene-celebot[data-state='excellent'] .celebot {
+  animation: dance 0.8s ease-in-out infinite;
+}
+.scene-celebot[data-state='excellent'] .cb-arm-r {
+  animation: wave 0.4s ease-in-out infinite alternate;
+  transform-origin: 98px 66px;
+  transform-box: view-box;
+}
+.scene-celebot[data-state='excellent'] .bulb.b0 {
+  animation: bulb-on-0 0.2s forwards, bulb-twinkle 1s steps(2) infinite;
+  animation-delay: var(--d), 1s;
+}
+.scene-celebot[data-state='excellent'] .bulb.b1 {
+  animation: bulb-on-1 0.2s forwards, bulb-twinkle 1.3s steps(2) infinite;
+  animation-delay: var(--d), 1s;
+}
+.scene-celebot[data-state='excellent'] .bulb.b2 {
+  animation: bulb-on-2 0.2s forwards, bulb-twinkle 0.9s steps(2) infinite;
+  animation-delay: var(--d), 1s;
+}
+.scene-celebot[data-state='excellent'] .bulb.b3 {
+  animation: bulb-on-3 0.2s forwards, bulb-twinkle 1.5s steps(2) infinite;
+  animation-delay: var(--d), 1s;
+}
+.scene-celebot[data-state='excellent'] .disco {
+  animation: disco 1.2s linear infinite;
+}
+.scene-celebot .cf {
+  opacity: 0;
+}
+.scene-celebot[data-state='excellent'] .cf {
+  animation: cf-fall calc(2.4s / var(--s)) linear infinite;
+  animation-delay: calc(var(--d) * 1s);
+}
+.scene-celebot .candle {
+  fill: #ffd166;
+  animation: beacon 0.4s steps(2) infinite;
+}
+@keyframes dance {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  25% {
+    transform: translateY(-2px) rotate(-3deg);
+  }
+  75% {
+    transform: translateY(-2px) rotate(3deg);
+  }
+}
+@keyframes wave {
+  to {
+    transform: rotate(-14deg);
+  }
+}
+@keyframes disco {
+  50% {
+    filter: brightness(1.6) drop-shadow(0 0 2px #fff);
+  }
+}
+@keyframes cf-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(116px) rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------------- tower */
+.scene-tower .town {
+  fill: #2a3570;
+}
+.scene-tower .tw-win {
+  fill: #3a4070;
+}
+.scene-tower .crystal rect {
+  fill: #4a5a9a;
+}
+.scene-tower .crystal-glow {
+  fill: #47f5e8;
+  opacity: 0.06;
+}
+.scene-tower .crystal-shine {
+  opacity: 0.25;
+}
+.scene-tower .beam {
+  stroke: #47f5e8;
+  stroke-width: 0.6;
+  opacity: 0;
+}
+.scene-tower .node rect {
+  fill: #3a4a86;
+}
+.scene-tower .node.on rect {
+  fill: #47f5e8;
+}
+.scene-tower .node.on {
+  filter: drop-shadow(0 0 1.5px #47f5e8);
+  animation: node-pulse 2s ease-in-out infinite;
+}
+.scene-tower .node-beam {
+  stroke: #47f5e8;
+  stroke-width: 0.5;
+  stroke-dasharray: 1.5 1.5;
+  opacity: 0;
+}
+.scene-tower .node-beam.on {
+  opacity: 0.35;
+  animation: dash 1.2s linear infinite;
+}
+.scene-tower .warn {
+  animation: beacon 0.8s steps(2) infinite;
+}
+.scene-tower .rings rect {
+  opacity: 0.5;
+}
+@keyframes node-pulse {
+  50% {
+    opacity: 0.6;
+  }
+}
+@keyframes dash {
+  to {
+    stroke-dashoffset: -6;
+  }
+}
+@keyframes town-on {
+  to {
+    fill: #ffd166;
+  }
+}
+@keyframes town-on-cyan {
+  to {
+    fill: #47f5e8;
+  }
+}
+@keyframes crystal-full {
+  to {
+    fill: #9ffcf5;
+  }
+}
+@keyframes glow-full {
+  to {
+    opacity: 0.4;
+  }
+}
+@keyframes beam-shoot {
+  0% {
+    opacity: 0;
+    stroke-dasharray: 0 200;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.55;
+    stroke-dasharray: 200 0;
+  }
+}
+
+/* excellent: crystal charges, beams shoot out, towns light up */
+.scene-tower[data-state='excellent'] .warn,
+.scene-tower[data-state='restored'] .warn {
+  display: none;
+}
+.scene-tower[data-state='excellent'] .crystal rect,
+.scene-tower[data-state='restored'] .crystal rect {
+  animation: crystal-full 0.6s 0.2s forwards;
+}
+.scene-tower[data-state='excellent'] .crystal-glow,
+.scene-tower[data-state='restored'] .crystal-glow {
+  animation: glow-full 0.8s 0.3s forwards, glow-throb 1.6s 1.2s ease-in-out infinite alternate;
+}
+.scene-tower[data-state='excellent'] .crystal-shine,
+.scene-tower[data-state='restored'] .crystal-shine {
+  opacity: 0.9;
+}
+.scene-tower[data-state='excellent'] .crystal,
+.scene-tower[data-state='restored'] .crystal {
+  animation: crystal-spin 3s 0.8s ease-in-out infinite;
+  transform-origin: center;
+}
+.scene-tower[data-state='excellent'] .beam,
+.scene-tower[data-state='restored'] .beam {
+  animation: beam-shoot 0.9s forwards;
+  animation-delay: var(--d);
+}
+.scene-tower[data-state='excellent'] .town,
+.scene-tower[data-state='restored'] .town {
+  animation: town-on 0.25s forwards, bulb-twinkle 2.2s steps(2) infinite;
+  animation-delay: calc(1.2s + var(--d)), calc(3s + var(--d));
+}
+.scene-tower[data-state='excellent'] .town.t3,
+.scene-tower[data-state='restored'] .town.t3 {
+  animation-name: town-on-cyan, bulb-twinkle;
+}
+.scene-tower[data-state='excellent'] .tw-win,
+.scene-tower[data-state='restored'] .tw-win {
+  animation: light-win 0.2s forwards;
+  animation-delay: var(--d);
+}
+.scene-tower[data-state='excellent'] .rings rect,
+.scene-tower[data-state='restored'] .rings rect {
+  opacity: 1;
+  animation: dim-pulse 1.4s ease-in-out infinite;
+}
+.scene-tower[data-state='restored'] .node rect {
+  animation: town-on-cyan 0.3s forwards;
+  animation-delay: var(--d);
+}
+.scene-tower[data-state='restored'] .node-beam {
+  animation: beam-shoot 0.8s forwards, dash 1.2s 1s linear infinite;
+  animation-delay: var(--d), 1s;
+}
+.scene-tower[data-state='restored'] .aurora {
+  animation-duration: 4s;
+  filter: saturate(1.6) brightness(1.3);
+}
+@keyframes glow-throb {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0.55;
+  }
+}
+@keyframes crystal-spin {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+
+/* partial: crystal sputters */
+.scene-tower[data-state='partial'] .crystal rect {
+  animation: crystal-sputter 1.2s 0.2s steps(1) infinite;
+}
+.scene-tower[data-state='partial'] .beam:nth-child(2n) {
+  animation: beam-shoot 0.9s forwards, flicker 1.6s 1s steps(1) infinite;
+  animation-delay: var(--d), 1s;
+}
+.scene-tower[data-state='partial'] .town:nth-child(3n) {
+  animation: town-on 0.25s forwards, flicker 2s steps(1) infinite;
+  animation-delay: calc(1.2s + var(--d)), 2s;
+}
+@keyframes crystal-sputter {
+  0%,
+  100% {
+    fill: #4a5a9a;
+  }
+  30% {
+    fill: #9ffcf5;
+  }
+  45% {
+    fill: #4a5a9a;
+  }
+  70% {
+    fill: #9ffcf5;
+  }
+}
+
+/* poor: tower fizzles */
+.scene-tower[data-state='poor'] .crystal-glow {
+  animation: overload 0.6s 0.2s forwards;
+}
+.scene-tower[data-state='poor'] .tower-body {
+  animation: px-shake 0.3s 0.2s 4;
+  transform-box: view-box;
+}
+
+/* ------------------------------------------------------- map node icons */
+.px-icon {
+  image-rendering: pixelated;
+}
+
+/* reduced motion: show end states without movement */
+@media (prefers-reduced-motion: reduce) {
+  .scene-weather .wf {
+    animation: none !important;
+    transform: translateY(calc(var(--d) * 36px));
+  }
+}
